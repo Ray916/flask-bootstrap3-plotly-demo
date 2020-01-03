@@ -1,0 +1,163 @@
+
+{% extends "dashboard.html" %} <!-- 继承基础模板 -->
+
+{% block content %} <!-- 替换页面内容 -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="header">
+                <h4 class="title">近30天数据入库折线图</h4>
+            </div>
+            <div class="content">
+                <div class="chart" id="bargraph"></div>
+                <div class="footer">
+                    <hr>
+                    <div class="stats">
+                        <i class="fa fa-clock-o"></i>来源：
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="header">
+                <h4 class="title">数据检索</h4>
+            </div>
+            <div class="content">
+                <div class="row">
+                    <div class="col-md-3 search-input"><input id="hotname" class="form-control" type="text" placeholder="热搜词"></div>
+                    <div class="col-md-3 search-input"><input id="region"  class="form-control" type="text" placeholder="地区"></div>
+                    <div class="col-md-3 search-button"><button id="search" class="btn btn-default" type="button" name="refresh" title="查询"><i class="glyphicon glyphicon-search icon-search"></i></button></div> 
+                    <div class="col-md-3"><button id="deleterecords" class="btn btn-default pull-right" type="button"><i class="glyphicon glyphicon-trash icon-trash"></i></button></div> 
+                </div>
+                <div>
+                    <table class="table table-hover" id="table-request"></table>
+                </div>
+                <div class="footer">
+                    <hr>
+                    <div class="stats">
+                        <i class="fa fa-clock-o"></i> 来源：
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#bargraph').ready(function(){
+            $.ajax({
+                    url: "/baidu/graph",
+                    type: "GET",
+                    contentType: 'application/json;charset=UTF-8',
+                    dataType:"json",
+                    success: function (data) {
+                        Plotly.newPlot('bargraph', data );
+                    }
+                });
+            })
+
+        $('#table-request').bootstrapTable({
+            url:'',             //请求后台的URL（*）
+            method: 'get',                      //请求方式（*）
+            toolbar: '#toolbar',                //工具按钮用哪个容器
+            striped: true,                      //是否显示行间隔色
+            cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+            pagination: true,                   //是否显示分页（*）
+            //sortable: false,                     //是否启用排序
+            //sortOrder: "asc",                   //排序方式
+            queryParams: queryParams,         //传递参数（*）
+            sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+            pageNumber:1,                       //初始化加载第一页，默认第一页
+            pageSize: 10,                       //每页的记录行数（*）
+            pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+            smartDisplay:false,
+            search: false,                      //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+            strictSearch: false,
+            showColumns: false,                 //是否显示所有的列
+            //showRefresh: true,                 //是否显示刷新按钮
+            minimumCountColumns: 0,             //最少允许的列数
+            clickToSelect: true,                //是否启用点击选中行
+            //height: 200,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+            uniqueId: "GUID",                     //每一行的唯一标识，一般为主键列
+            showToggle:false,                   //是否显示详细视图和列表视图的切换按钮
+            cardView: false,                    //是否显示详细视图
+            detailView: false,             
+            columns: [
+                {
+                    field:'GUID',
+                    title:'ID',
+                },{
+                    field:'HOT_NAME',
+                    title:'热搜词',
+                },{
+                    field:'HOT_NUM',
+                    title:'热度',
+                },{
+                    field:'REGION',
+                    title:'地区',
+                },{
+                    field:'LOAD_TIME',
+                    title:'时间',
+                },
+                  {
+                     field:'checkbox',
+                     checkbox: true
+                 }
+            ]                     //列设置
+        });
+        function queryParams(params) {
+            return {
+                offset: params.offset,      //从数据库第几条记录开始
+                limit: params.limit,    //找多少条
+                hotname:'',   
+                region:''     
+            }
+        }
+
+        $("#search").click(function(){ 
+            var hotname = $("#hotname").val();
+            var region = $("#region").val(); 
+            //定义刷新参数 
+            if(hotname != '' || region != ''){ 
+                var param = { 
+                    url: "/baidu/search", 
+                    query: {'hotname':hotname,'region':region} 
+                }
+            }
+            // 刷新表格 
+            $('#table-request').bootstrapTable('refresh', param); 
+        }); 
+
+        $("#deleterecords").click(function(){
+            var records = $('#table-request').bootstrapTable('getSelections');
+            if(records.length<=0){
+                alert("请选中一行！")
+            }else {
+                var con = confirm("删除后将直接删除后台数据库数据，请确认!")
+                if(con == true){
+                    var b = JSON.stringify(records);
+                    $.ajax({
+                            type: "post",
+                            url: "",
+                            dataType: "json",
+                            data: b,
+                            success: function (data) {
+                                if (data.errorCode === 200) {
+                                    alert("操作成功");
+                                    $("#table-request").bootstrapTable("refresh");
+                                } else {
+                                    alert('操作失败！' + data.errorMsg);
+                                    $("#table-request").bootstrapTable("refresh");
+                                }
+                            }
+                        });
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

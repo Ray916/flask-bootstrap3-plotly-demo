@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/img/favicon.ico') }}">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+	<title>bootTable+plotly demo</title>
+
+	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width" />
+
+
+    <!-- Bootstrap core CSS     -->
+    <link href="{{ url_for('static', filename='assets/css/bootstrap.min.css') }}" rel="stylesheet" />
+
+    <!-- Animation library for notifications   -->
+    <link href="{{ url_for('static', filename='assets/css/animate.min.css') }}" rel="stylesheet"/>
+
+    <!--  Light Bootstrap Table core CSS    -->
+    <link href="{{ url_for('static', filename='assets/css/light-bootstrap-dashboard.css') }}" rel="stylesheet"/>
+    <link href="{{ url_for('static', filename='assets/css/pe-icon-7-stroke.css') }}" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='assets/css/font-awesome.min.css') }}" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='assets/css/bootstrap-table.min.css') }}" rel="stylesheet"/>
+    
+    <!--   Core JS Files   -->
+    <script src="{{ url_for('static', filename='assets/js/jquery.3.2.1.min.js') }}" type="text/javascript"></script>
+    <script src="{{ url_for('static', filename='assets/js/bootstrap.min.js') }}" type="text/javascript"></script>
+    <script src="{{ url_for('static', filename='assets/js/light-bootstrap-dashboard.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='assets/js/bootstrap-table.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/bootstrap-table-zh-CN.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/plotly-latest.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/d3.min.js') }}"></script>
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="sidebar" data-color="blue" data-image="{{ url_for('static', filename='assets/img/sidebar.jpg') }}">
+
+    <!--
+
+        Tip 1: you can change the color of the sidebar using: data-color="blue | azure | green | orange | red | purple"
+        Tip 2: you can also add an image using data-image tag
+
+    -->
+
+    	<div class="sidebar-wrapper">
+            <div class="logo">
+                <a href="#" class="simple-text">
+                    bootTable+plotly demo
+                </a>
+            </div>
+
+            <ul class="nav">
+                <li class="{%if page == 'dashboard'%}active{%endif%}">
+                    <a href="dashboard.html">
+                        <i class="pe-7s-graph"></i>
+                        <p>dashboard</p>
+                    </a>
+                </li>
+                <li class="{%if page == 'user'%}active{%endif%}">
+                    <a href="user.html">
+                        <i class="pe-7s-user"></i>
+                        <p>user</p>
+                    </a>
+                </li>
+                <li class="{%if page == 'icon'%}active{%endif%}">
+                    <a href="icons.html">
+                        <i class="pe-7s-science"></i>
+                        <p>Icons</p>
+                    </a>
+                </li>
+                <li class="{%if page == 'map'%}active{%endif%}">
+                    <a href="maps.html">
+                        <i class="pe-7s-map-marker"></i>
+                        <p>Maps</p>
+                    </a>
+                </li>
+                <li class="{%if page == 'notifa'%}active{%endif%}">
+                    <a href="notifications.html">
+                        <i class="pe-7s-bell"></i>
+                        <p>Notifications</p>
+                    </a>
+                </li>
+            </ul>
+    	</div>
+    </div>
+
+    <div class="main-panel">
+        <nav class="navbar navbar-default navbar-fixed">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <!-- <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation-example-2">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button> -->
+                    <a class="navbar-brand" href="#">dashboard</a>
+                </div>
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                           <a href="">
+                               <p>account</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <p>logout</p>
+                            </a>
+                        </li>
+						<li class="separator hidden-lg"></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+
+        <div class="content">
+            <div class="container-fluid">
+                {% block content %}  <!-- 定义内容块 -->
+                {% endblock %}
+            </div>
+        </div>
+
+
+        <footer class="footer">
+            <div class="container-fluid">
+                <p class="copyright text-center">
+                    &copy; <script>document.write(new Date().getFullYear())</script>  ray916
+                </p>
+            </div>
+        </footer>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,4 @@
+bootstrap3
+bootstrap-table
+flask
+plotly
